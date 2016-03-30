@@ -1,10 +1,34 @@
 package com.succez.server.app.utils;
 
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class IOUtils {
-	
+
+	public static byte[] file2buf(File fobj) {
+		byte[] buf = null;
+		InputStream in = null;
+		try {
+			in = new FileInputStream(fobj);
+			int fileLength = (int) fobj.length();
+			buf = new byte[fileLength];
+			int offset = 0;
+			int readCount = 0;
+			int length = fileLength > 4096 ? 4096 : fileLength;
+			while (offset < fileLength
+					&& (readCount = in.read(buf, offset, length)) >= 0) {
+				offset += readCount;
+			}
+		} catch (Exception e) {
+		} finally {
+			free(in);
+		}
+		return buf;
+	}
+
 	public static void free(Closeable closeable) {
 		if (closeable != null) {
 			try {

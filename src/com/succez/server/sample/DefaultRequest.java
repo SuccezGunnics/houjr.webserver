@@ -6,23 +6,30 @@ import java.net.Socket;
 
 import com.succez.server.core.Request;
 
-public class DefaultRequest  implements Request{
-	
+public class DefaultRequest implements Request {
+
 	private Socket client;
-	
-	public DefaultRequest(Socket client){
+
+
+	public DefaultRequest(Socket client) {
+		super();
 		this.client = client;
 	}
-	
+
 	@Override
-	public  InputStream getInputStream() throws IOException{
-		return client.getInputStream();
+	public InputStream getInputStream() {
+		InputStream in = null;
+		try {
+			in = client.getInputStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return in;
 	}
 
 	@Override
 	public String getMethod() {
-		return null;
+		return "GET";
 	}
 
 }
- 
