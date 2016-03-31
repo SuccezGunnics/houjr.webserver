@@ -10,7 +10,6 @@ public abstract class DefaultHandler implements Handler {
 	@Override
 	public void service(Request request, Response response) {
 		if (request.getMethod().equalsIgnoreCase(Request.GET)) {
-			System.out.println("holly,doGet");
 			doGet(request, response);
 		}
 

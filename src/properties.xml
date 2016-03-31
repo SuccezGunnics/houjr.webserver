@@ -5,7 +5,7 @@
 	<handler>
 		<handler-class>com.succez.server.app.FileBrowsingHandler</handler-class>
 	</handler>
-	<default-root>d:</default-root>
+	<default-root>/d:/</default-root>
 	<browsable>
 		<image>
 			<jpg>.JPG</jpg>

@@ -6,120 +6,99 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import com.succez.server.app.utils.IOUtils;
+import com.succez.server.app.utils.SeparatorUtils;
 import com.succez.server.core.Request;
 import com.succez.server.core.Response;
 import com.succez.server.sample.DefaultHandler;
 
 public class FileBrowsingHandler extends DefaultHandler {
 
-	private static final String HEAD_TEXT = "HTTP/1.0200OK\nContent-Type:text/html\nServer:myserver\n\n";
-//	private static final String HEAD_IMAGE = "HTTP/1.0200OK\nContent-Type:image/jpeg\nServer:myserver\n\n";
-//	private static final Integer HEAD_TEXT_LENGTH = HEAD_TEXT.length();
-//	private static final Integer HEAD_IMAGE_LENGTH = HEAD_IMAGE.length();
+	private static final String HEAD_TEXT = "HTTP/1.0200OK\nContent-Type:text/html\nServer:myserver\n"+SeparatorUtils.getLineSeparator();
+	private static final String HEAD_IMAGE = "HTTP/1.0200OK\nContent-Type:image/jpeg\nServer:myserver\n"+SeparatorUtils.getLineSeparator();
 
 	@Override
 	public void doPost(Request request, Response response) {
-		// Å×Òì³£
+		// æŠ›å¼‚å¸¸
 	}
 
 	@Override
 	public void doGet(Request request, Response response) {
-		// ÅÐ¶ÏÇëÇó×´Ì¬£¬·Ö±ð½øÐÐ´¦Àí¡£¡£¡£
 		String requestInfo = requestInfo(request.getInputStream());
-		System.out.println(requestInfo);
-		sampleMethod(request, response);
-		int state = getRequestType(requestInfo);
+		String url = requestInfo.substring(requestInfo.indexOf('/'),
+				requestInfo.lastIndexOf(' '));
+		if(url.equals("/"))
+			url = Context.getConfigVal("webRoot");
+		String method = requestInfo.substring(0, requestInfo.indexOf(' '));
+		int state = getRequestType(method, url);
 		switch (state) {
 		case 0:
 			doPost(request, response);
 			break;
 		case -1:
-			handleIllegalPath(request, response);
 			break;
 		case -2:
-			handleNotExitPath(request, response);
 			break;
 		case 1:
-			handleDirectory(request, response);
+			handleDirectory(url, response);
 			break;
 		case 2:
-			handleBroswableText(request, response);
+			handleBrowsalbeText(url, response);
 			break;
 		case 3:
-			handleBrosableImage(request, response);
+			handleBrowableImage(url, response);
 			break;
 		case 4:
-			handleDownload(request, response);
 			break;
 		}
 	}
 
-	private void handleBrosableImage(Request request, Response response) {
-		// TODO Auto-generated method stub
+	private void handleDirectory(String url, Response response) {
+		File file = new File(url);
+		File[] subFiles = file.listFiles();
+		response.write(HEAD_TEXT.getBytes());
+		response.write(IOUtils.file2buf(new File("webroot/pre.txt")));
+		String temp;
+		for (int i = 0; i < subFiles.length; i++) {
+			temp = "<tr><td><a href=\"/" + subFiles[i].getAbsolutePath()
+					+ "\">" + subFiles[i].getName() + "</a></td></tr>";
+			try {
+				response.write(temp.getBytes("utf-8"));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		response.write(IOUtils.file2buf(new File("webroot/last.txt")));
+	}
+
+	private void handleBrowsalbeText(String url, Response response) {
+		File file = new File(url);
+		response.write(HEAD_TEXT.getBytes());
+		response.write(IOUtils.file2buf(file));
 
 	}
 
-	private void handleDownload(Request request, Response response) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void handleBroswableText(Request request, Response response) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void handleDirectory(Request request, Response response) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void handleNotExitPath(Request request, Response response) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void handleIllegalPath(Request request, Response response) {
-		// TODO Auto-generated method stub
-
+	private void handleBrowableImage(String url, Response response) {
+		File file = new File(url);
+		response.write(HEAD_IMAGE.getBytes());
+		response.write(IOUtils.file2buf(file));
 	}
 
 	private String requestInfo(InputStream in) {
 		String info = null;
-		BufferedReader br = new BufferedReader(new InputStreamReader(in));
+		BufferedReader br = null;
 		try {
-			info = br.readLine();
+			br = new BufferedReader(new InputStreamReader(in,"utf-8"));
+			info = URLDecoder.decode(br.readLine(), "UTF-8");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return info;
 	}
 
-	private void sampleMethod(Request request, Response response) {
-		// ´Ë·½·¨½ö×÷Îª¿ÉÐÐÐÔ²âÊÔ¡£¡£¡£
-		try {
-			byte[] head = getHead().getBytes("utf-8");
-			byte[] content = IOUtils.file2buf(new File("webroot/index.html"));
-			byte[] total = new byte[head.length + content.length];
-			for (int i = 0; i < head.length; i++) {
-				total[i] = head[i];
-			}
-			for (int i = head.length; i < total.length; i++) {
-				total[i] = content[i - head.length];
-			}
-			response.write(total);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private int getRequestType(String requestInfo) {
-
-		String url = requestInfo.substring(requestInfo.indexOf('/') + 1,
-				requestInfo.lastIndexOf(' '));
-		String method = requestInfo.substring(0, requestInfo.lastIndexOf(' '));
+	private int getRequestType(String method, String url) {
 
 		if (!method.equalsIgnoreCase(Request.GET)) {
 			return 0;
@@ -145,12 +124,7 @@ public class FileBrowsingHandler extends DefaultHandler {
 						.isBrowsalbeImage(url.substring(url.lastIndexOf('.')))) {
 			return 3;
 		}
-
 		return 4;
-	}
-
-	private String getHead() {
-		return HEAD_TEXT;
 	}
 
 }

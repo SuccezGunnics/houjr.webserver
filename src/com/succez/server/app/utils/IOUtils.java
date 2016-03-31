@@ -1,13 +1,27 @@
 package com.succez.server.app.utils;
 
+import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class IOUtils {
-
+	
+	public static String inputStream2Str(InputStream in){
+		String info = null;
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new InputStreamReader(in));
+			info = br.readLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return info;
+	}
+	
 	public static byte[] file2buf(File fobj) {
 		byte[] buf = null;
 		InputStream in = null;

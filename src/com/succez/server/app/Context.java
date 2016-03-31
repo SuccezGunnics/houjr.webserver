@@ -50,22 +50,22 @@ public class Context {
 			configMap.put("default_HandlerClass", default_HandlerClass);
 			configMap.put("default_Port", default_Port);
 			configMap.put("webRoot", webRoot);
-			System.out.println("服务器初始化成功~~~");
+			System.out.println("鍒濆鍖栨垚鍔焴~~");
 		} catch (Exception e) {
-			System.out.println("服务器初始化失败~~~");
+			System.out.println("鍒濆鍖栧け璐~~");
 			e.printStackTrace();
 		}
 	}
 
 	public static boolean isBrowsalbeText(String content) {
-		if (textList.contains(content)) {
+		if (textList.contains(content.toUpperCase())) {
 			return true;
 		}
 		return false;
 	}
 
 	public static boolean isBrowsalbeImage(String content) {
-		if (imageList.contains(content)) {
+		if (imageList.contains(content.toUpperCase())) {
 			return true;
 		}
 		return false;

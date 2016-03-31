@@ -13,7 +13,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * XML ¹¤¾ßÀà
+ * XMLå·¥å…·ç±»
  * 
  * @author Gunnics
  *
@@ -22,7 +22,7 @@ import org.w3c.dom.NodeList;
 public class XmlUtils {
 
 	/**
-	 * ÅĞ¶ÏÒ»¸öÎÄ¼şÊÇ·ñÎªXMLÎÄ¼ş£º <blockquote>
+	 * åˆ¤æ–­æ–‡ä»¶æ˜¯å¦æ˜¯XMLæ–‡ä»¶ <blockquote>
 	 * 
 	 * <pre>
 	 * "a.xml"  returns true
@@ -50,7 +50,7 @@ public class XmlUtils {
 	}
 
 	/**
-	 * ½²Ò»¸öxmlÎÄ¼ş¼ÓÔØµ½document¶ÔÏó
+	 * å°†xmlæ–‡ä»¶åŠ è½½åˆ°documentå¯¹è±¡
 	 * 
 	 * @param fileName
 	 * @return
@@ -72,7 +72,7 @@ public class XmlUtils {
 	}
 
 	/**
-	 * »ñÈ¡Ò»¸öxmlDocument¶ÔÏóµÄ¸ù½Úµã¡£
+	 * è·å¾—xmlæ–‡ä»¶çš„æ ¹èŠ‚ç‚¹
 	 * 
 	 * @param xmlDoc
 	 * @return
@@ -82,7 +82,7 @@ public class XmlUtils {
 	}
 
 	/**
-	 * ·µ»Øµ±²ÎÊı½ÚµãµÄËùÓĞ×Ó½Úµã
+	 * è·å¾—ä¸€ä¸ªèŠ‚ç‚¹çš„æ‰€æœ‰å­èŠ‚ç‚¹
 	 * 
 	 * @param parent
 	 * @return
@@ -101,7 +101,7 @@ public class XmlUtils {
 	}
 
 	/**
-	 * ·µ»Ø²ÎÊı½ÚµãµÄËùÓĞ½ÚµãÃûÎªelemNameµÄ×Ó½Úµã¡£
+	 * é€šè¿‡èŠ‚ç‚¹åè·å–å­èŠ‚ç‚¹
 	 * 
 	 * @param parent
 	 * @param elemName
@@ -122,8 +122,8 @@ public class XmlUtils {
 	}
 
 	/**
-	 * ·µ»Ø²ÎÊı½ÚµãÒÔnodeNameÎª½ÚµãÃûµÄµÚÒ»¸ö×Ó½Úµã
-	 * Èç¹û²»´æÔÚ£¬Ôò·µ»Ønull;
+	 * é€šè¿‡åç§°è·å–å­å…ƒç´ 
+	 * 
 	 * @param parent
 	 * @param nodeName
 	 * @return
@@ -137,7 +137,7 @@ public class XmlUtils {
 	}
 	
 	/**
-	 * ·µ»Øµ±Ç°½ÚµãµÄ ÎÄ±¾Öµ
+	 * è·å–èŠ‚ç‚¹æ–‡æœ¬å€¼
 	 * @param elem
 	 * @return
 	 */

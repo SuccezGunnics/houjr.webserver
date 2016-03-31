@@ -29,7 +29,7 @@ public class HttpServer {
 		try {
 			socket = new ServerSocket(port);
 		} catch (IOException e) {
-			System.out.println("Æô¶¯·şÎñÆ÷Ê§°Ü£¡");
+			System.out.println("æœåŠ¡å™¨å¯åŠ¨å¤±è´¥");
 			e.printStackTrace();
 		}
 		doService(socket);
@@ -58,7 +58,7 @@ public class HttpServer {
 	}
 
 	public void shutdown() {
-		// ¹Ø±Õ·şÎñÆ÷
+		// å…³é—­æœåŠ¡å™¨
 	}
 
 	private class ServerThread extends Thread {

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import com.succez.server.app.utils.IOUtils;
 import com.succez.server.core.Response;
 
 public class DefaultResponse implements Response {
@@ -23,8 +22,6 @@ public class DefaultResponse implements Response {
 			out.write(responseInfo);
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			IOUtils.free(out);
 		}
 	}
 
