@@ -50,7 +50,7 @@ public class HttpServer {
 		}
 	}
 
-	private static void initService() {
+	public static void initService() {
 		Context.load();
 		port = Integer.valueOf(Context.getConfigVal("default_Port"));
 		maxConNumber = Integer.valueOf(Context.getConfigVal("max_ConNumber"));
@@ -90,7 +90,6 @@ public class HttpServer {
 		public void run() {
 			Request request = new DefaultRequest(client);
 			Response response = new DefaultResponse(client);
-
 			Handler handler = getHandlerInstance();
 			if (handler != null) {
 				handler.service(request, response);
