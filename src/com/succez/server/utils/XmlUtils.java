@@ -1,4 +1,4 @@
-package com.succez.server.app.utils;
+package com.succez.server.utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -56,17 +56,17 @@ public class XmlUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Document load(File fileName) throws Exception {
-		if (isXml(fileName)) {
-			DocumentBuilderFactory factory = DocumentBuilderFactory
-					.newInstance();
+	public static Document load(File fileName) {
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setIgnoringComments(false);
 			factory.setIgnoringElementContentWhitespace(true);
 			factory.setValidating(false);
 			factory.setCoalescing(false);
-
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			return builder.parse(fileName);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -89,9 +89,10 @@ public class XmlUtils {
 	 */
 	public static Element[] getChildren(Element parent) {
 		NodeList nodes = parent.getChildNodes();
-		List<Element> list = new ArrayList<Element>();
-		if (list != null && nodes.getLength() > 0) {
-			for (int i = 0; i < nodes.getLength(); i++) {
+		int len = nodes.getLength();
+		List<Element> list = new ArrayList<Element>(len);
+		if (nodes != null && len > 0) {
+			for (int i = 0; i < len; i++) {
 				if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					list.add((Element) nodes.item(i));
 				}
@@ -109,12 +110,38 @@ public class XmlUtils {
 	 */
 	public static Element[] getChildrenByName(Element parent, String elemName) {
 		NodeList nodes = parent.getChildNodes();
-		List<Element> list = new ArrayList<Element>();
-		if (list != null && nodes.getLength() > 0) {
-			for (int i = 0; i < nodes.getLength(); i++) {
+		int len = nodes.getLength();
+		List<Element> list = new ArrayList<Element>(len);
+		if (nodes != null && len > 0) {
+			for (int i = 0; i < len; i++) {
 				if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE
 						&& nodes.item(i).getNodeName().equals(elemName)) {
 					list.add((Element) nodes.item(i));
+				}
+			}
+		}
+		return list.toArray(new Element[list.size()]);
+	}
+
+	/**
+	 * 获取parent节点中 属性名为属性值的所有子节点。
+	 * @param parent 父节点
+	 * @param attrName 属性名
+	 * @param attrValue 属性值
+	 * @return
+	 */
+	public static Element[] getChildrenByAttrubte(Element parent,
+			String attrName,String attrValue) {
+		NodeList nodes = parent.getChildNodes();
+		int len = nodes.getLength();
+		Element temp;
+		List<Element> list = new ArrayList<Element>(len);
+		if (nodes != null && len > 0) {
+			for (int i = 0; i < len; i++) {
+				if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					temp = (Element) nodes.item(i);
+					if (getAttribute(temp, attrName).equalsIgnoreCase(attrValue))
+						list.add(temp);
 				}
 			}
 		}
@@ -129,19 +156,30 @@ public class XmlUtils {
 	 * @return
 	 */
 	public static Element getChildByName(Element parent, String nodeName) {
-		Element[] elems = getChildrenByName(parent, nodeName);
-		if (elems != null && elems.length > 0) {
-			return elems[0];
+		NodeList nodes = parent.getChildNodes();
+		int len = nodes.getLength();
+		if (nodes != null && len > 0) {
+			for (int i = 0; i < len; i++) {
+				if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE
+						&& nodes.item(i).getNodeName().equals(nodeName)) {
+					return (Element) nodes.item(i);
+				}
+			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 获取节点文本值
+	 * 
 	 * @param elem
 	 * @return
 	 */
-	public static String getElementText(Element elem){
+	public static String getElementText(Element elem) {
 		return elem.getTextContent();
+	}
+
+	public static String getAttribute(Element elem, String attrName) {
+		return elem.getAttribute(attrName);
 	}
 }

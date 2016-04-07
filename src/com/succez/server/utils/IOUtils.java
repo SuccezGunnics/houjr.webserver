@@ -1,27 +1,34 @@
-package com.succez.server.app.utils;
+package com.succez.server.utils;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 public class IOUtils {
-	
-	public static String inputStream2Str(InputStream in){
-		String info = null;
-		BufferedReader br = null;
+
+	public static void writeFile(File file, OutputStream out, int cache) {
+		if (cache <= 0) {
+			return;
+		}
+		FileInputStream fis = null;
+		byte[] buf = new byte[cache];
+		int total;
 		try {
-			br = new BufferedReader(new InputStreamReader(in));
-			info = br.readLine();
+			fis = new FileInputStream(file);
+			while ((total = fis.read(buf)) != -1) {
+				out.write(buf, 0, total);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally{
+			free(fis);
 		}
-		return info;
+
 	}
-	
+
 	public static byte[] file2buf(File fobj) {
 		byte[] buf = null;
 		InputStream in = null;

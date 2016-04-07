@@ -7,8 +7,8 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.URLDecoder;
 
-import com.succez.server.app.utils.SeparatorUtils;
 import com.succez.server.core.Request;
+import com.succez.server.utils.CommonUtils;
 
 public class DefaultRequest implements Request {
 
@@ -37,7 +37,7 @@ public class DefaultRequest implements Request {
 	}
 
 	private String getRequestInfo() {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		BufferedReader br = null;
 		String line = null;
 		InputStream in = null;
@@ -48,7 +48,7 @@ public class DefaultRequest implements Request {
 				if(line.trim().equals("")){
 					break;
 				}
-				buf.append(URLDecoder.decode(line, "utf-8")+SeparatorUtils.getLineSeparator());
+				buf.append(URLDecoder.decode(line, "utf-8")+CommonUtils.getLineSeparator());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -58,8 +58,13 @@ public class DefaultRequest implements Request {
 
 	@Override
 	public String getRequestUrl() {
-		// TODO Auto-generated method stub
-		String url = head.substring(head.indexOf('/')+1, head.indexOf(' ',head.indexOf('/')));
+		String url = null;
+		int beginIndex = head.indexOf('/') + 1;
+		//int endIndex = head.lastIndexOf("HTTP") - 1;
+		int endIndex = head.substring(0,head.indexOf("\n")).lastIndexOf("HTTP")-1;
+		if (beginIndex > 0 && endIndex > 0) {
+			url = head.substring(beginIndex,endIndex);
+		}
 		return url;
 	}
 

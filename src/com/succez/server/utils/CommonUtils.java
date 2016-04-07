@@ -1,7 +1,15 @@
-package com.succez.server.app.utils;
+package com.succez.server.utils;
 
+import java.io.File;
 import java.util.Properties;
-public class SeparatorUtils {
+
+public class CommonUtils {
+	
+	public static String path2URL(File file){
+		String filePath = file.getAbsolutePath();
+		return filePath.replace('\\', '/');
+	}
+	
 
     /* system properties to get separators */
     static final Properties PROPERTIES = new Properties(System.getProperties());
@@ -21,4 +29,6 @@ public class SeparatorUtils {
     public static String getPathSeparator(){
         return PROPERTIES.getProperty("path.separator");
     }
+	
+
 }

@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.succez.server.app.Context;
 import com.succez.server.core.Handler;
 import com.succez.server.core.Request;
 import com.succez.server.core.Response;
@@ -15,9 +14,10 @@ import com.succez.server.sample.DefaultResponse;
 
 public class HttpServer {
 
-	private static int port;
-	private static int maxConNumber;
-	private static String handlerClass;
+	private int port;
+	private int maxConNumber;
+	private String handlerClass;
+	private Handler handler;
 
 	public static void main(String[] args) {
 		new HttpServer().start();
@@ -50,7 +50,7 @@ public class HttpServer {
 		}
 	}
 
-	public static void initService() {
+	public void initService() {
 		Context.load();
 		port = Integer.valueOf(Context.getConfigVal("default_Port"));
 		maxConNumber = Integer.valueOf(Context.getConfigVal("max_ConNumber"));
@@ -61,7 +61,7 @@ public class HttpServer {
 		// 关闭服务器
 	}
 
-	private class ServerThread extends Thread {
+	private class ServerThread implements Runnable {
 
 		Socket client;
 
@@ -70,21 +70,19 @@ public class HttpServer {
 		}
 
 		public Handler getHandlerInstance() {
-			Object instance = null;
-			try {
-				Class<?> cls = Class.forName(handlerClass);
+			if (handler == null) {
+				Object instance = null;
 				try {
+					Class<?> cls = Class.forName(handlerClass);
 					instance = cls.newInstance();
-				} catch (InstantiationException | IllegalAccessException e) {
+					if (instance instanceof Handler) {
+						handler = (Handler) instance;
+					}
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				if (instance instanceof Handler) {
-					return (Handler) instance;
-				}
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
 			}
-			return null;
+			return handler;
 		}
 
 		public void run() {
