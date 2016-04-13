@@ -3,6 +3,7 @@ package com.succez.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,6 +19,7 @@ public class HttpServer {
 	private int maxConNumber;
 	private String handlerClass;
 	private Handler handler;
+	private static boolean shutdownCommand = false;
 
 	public static void main(String[] args) {
 		new HttpServer().start();
@@ -38,12 +40,18 @@ public class HttpServer {
 	private void doService(ServerSocket server) {
 		boolean status = true;
 		ExecutorService threadPool = Executors.newFixedThreadPool(maxConNumber);
+		threadPool.execute(new ShutdownThread());
 		while (status) {
 			Socket client;
 			try {
 				client = server.accept();
 				ServerThread serverthread = new ServerThread(client);
 				threadPool.execute(serverthread);
+				if (shutdownCommand) {
+					threadPool.shutdown();
+					System.out.println("线程池关闭");
+					break;
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -55,10 +63,6 @@ public class HttpServer {
 		port = Integer.valueOf(Context.getConfigVal("default_Port"));
 		maxConNumber = Integer.valueOf(Context.getConfigVal("max_ConNumber"));
 		handlerClass = Context.getConfigVal("default_HandlerClass");
-	}
-
-	public void shutdown() {
-		// 关闭服务器
 	}
 
 	private class ServerThread implements Runnable {
@@ -92,6 +96,19 @@ public class HttpServer {
 			if (handler != null) {
 				handler.service(request, response);
 			}
+		}
+	}
+
+	private class ShutdownThread implements Runnable {
+		
+		@Override
+		public void run() {
+			Scanner scan = new Scanner(System.in);
+			// 下一步放在配置文件中
+			while (!scan.next().equalsIgnoreCase("exit"))
+				;
+			shutdownCommand = true;
+			scan.close();
 		}
 	}
 }
