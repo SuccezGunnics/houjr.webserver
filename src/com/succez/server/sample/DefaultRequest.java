@@ -68,4 +68,15 @@ public class DefaultRequest implements Request {
 		return url;
 	}
 
+	@Override
+	public String getHead(String name) {
+		String header = null;
+		int index;
+		if((index=head.indexOf("\n"+name))>0){
+			int fromIndex = head.indexOf(':', index)+2;
+			int endIndex = head.indexOf('\n', index+1)-1;
+			header = head.substring(fromIndex, endIndex);
+		}
+		return header;
+	}
 }

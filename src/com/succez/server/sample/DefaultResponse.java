@@ -10,7 +10,7 @@ import com.succez.server.core.Response;
 import com.succez.server.utils.IOUtils;
 
 public class DefaultResponse implements Response {
-	
+
 	private static final int CACHE = 4096;
 
 	private Socket client;
@@ -37,7 +37,6 @@ public class DefaultResponse implements Response {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	@Override
@@ -50,7 +49,7 @@ public class DefaultResponse implements Response {
 	}
 
 	@Override
-	public void write(String str,String charset) {
+	public void write(String str, String charset) {
 		try {
 			write(str.getBytes(charset));
 		} catch (UnsupportedEncodingException e) {
@@ -58,4 +57,12 @@ public class DefaultResponse implements Response {
 		}
 	}
 
+	@Override
+	public void write(byte[] responseInfo, int fromIndex, int endIndex) {
+		try {
+			client.getOutputStream().write(responseInfo, fromIndex, endIndex);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -10,6 +10,8 @@ public interface Request {
 	
 	public String getHead();
 	
+	public String getHead(String name);
+	
 	public String getRequestUrl();
 
 	

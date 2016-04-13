@@ -13,9 +13,9 @@ import com.succez.server.utils.XmlUtils;
 public class HandlerConst {
 
 	public static final String LINE_SEPARATOR = CommonUtils.getLineSeparator();
-	public static final String HEAD_TEXT = "HTTP/1.0200OK"+LINE_SEPARATOR+"Content-Type:text/html"+LINE_SEPARATOR+"Server:myserver"+LINE_SEPARATOR+LINE_SEPARATOR;
-	public static final String HEAD_IMAGE = "HTTP/1.0200OK"+LINE_SEPARATOR+"Content-Type:image/jpeg"+LINE_SEPARATOR+"Server:myserver"+LINE_SEPARATOR+LINE_SEPARATOR;
-	public static final String HEAD_DOWNLOAD = "HTTP/1.0200OK"+LINE_SEPARATOR+"Content-Type:application/octet-stream"+LINE_SEPARATOR+"Accept-Ranges: bytes"+LINE_SEPARATOR+"Server:myserver"+LINE_SEPARATOR;
+	public static final String HEAD_TEXT = "HTTP/1.1200OK"+LINE_SEPARATOR+"Content-Type:text/html"+LINE_SEPARATOR+"Server:myserver"+LINE_SEPARATOR+LINE_SEPARATOR;
+	public static final String HEAD_IMAGE = "HTTP/1.1200OK"+LINE_SEPARATOR+"Content-Type:image/jpeg"+LINE_SEPARATOR+"Server:myserver"+LINE_SEPARATOR+LINE_SEPARATOR;
+	public static final String HEAD_DOWNLOAD = "HTTP/1.1200OK"+LINE_SEPARATOR+"Content-Type:application/octet-stream"+LINE_SEPARATOR+"Accept-Ranges: bytes"+LINE_SEPARATOR+"Server:myserver"+LINE_SEPARATOR;
 	
 	public static final String HTML_PRE = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><title>PageList</title></head><body><table><tr><th>pageList:</th></tr>";
 	public static final String HTML_LAST = "</table></body></html>";
