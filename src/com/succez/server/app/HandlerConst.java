@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
 import org.w3c.dom.Element;
 
+import com.succez.server.HttpServer;
 import com.succez.server.utils.CommonUtils;
 import com.succez.server.utils.XmlUtils;
 
@@ -36,12 +38,14 @@ public class HandlerConst {
 	public static final Map<String, String> CONTENT_TYPE_MAP;
 
 	static {
+		Logger logger = HttpServer.LOGGER;
 		File file = new File("src/com/succez/server/app/web.xml");
 		Element root = null;
 		try {
 			root = XmlUtils.getRoot(XmlUtils.load(file));
 		} catch (Exception e1) {
-			e1.printStackTrace();
+			logger.error("failed to get configration of webapp!"
+					+ e1.getStackTrace());
 		}
 		Element defaultCharsetElem = XmlUtils.getChildByName(root,
 				"default-charset");

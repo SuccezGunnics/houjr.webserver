@@ -3,6 +3,9 @@ package com.succez.server.app;
 import java.io.File;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+
+import com.succez.server.HttpServer;
 import com.succez.server.core.Request;
 import com.succez.server.core.Response;
 import com.succez.server.sample.DefaultHandler;
@@ -10,9 +13,11 @@ import com.succez.server.utils.CommonUtils;
 
 public class FileBrowsingHandler extends DefaultHandler {
 
+	Logger logger = HttpServer.LOGGER;
+
 	@Override
 	public void doPost(Request request, Response response) {
-
+		handleIllegalPath(response);
 	}
 
 	@Override
@@ -21,7 +26,7 @@ public class FileBrowsingHandler extends DefaultHandler {
 		if (url.trim().equals("")) {
 			url = HandlerConst.WEB_ROOT;
 		}
-		System.out.println(url);
+		logger.debug(url);
 		File file = new File(url);
 		if (!url.startsWith(HandlerConst.WEB_ROOT)) {
 			handleIllegalPath(response);
@@ -57,7 +62,8 @@ public class FileBrowsingHandler extends DefaultHandler {
 			response.write(new File("webroot/404.html"));
 			response.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("A error occured while handling the IllegalPath"
+					+ e.getStackTrace());
 		}
 
 	}
@@ -88,7 +94,8 @@ public class FileBrowsingHandler extends DefaultHandler {
 		try {
 			new DownloadHandler().download(request, response, file);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("A error occured while downlaoding"
+					+ e.getStackTrace());
 		}
 	}
 
@@ -97,7 +104,8 @@ public class FileBrowsingHandler extends DefaultHandler {
 			response.print(HandlerConst.HEAD_IMAGE);
 			response.write(file);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("A error occured while handling BrowsableImage"
+					+ e.getStackTrace());
 		}
 		response.close();
 	}
@@ -107,7 +115,8 @@ public class FileBrowsingHandler extends DefaultHandler {
 			response.print(HandlerConst.HEAD_TEXT);
 			response.write(file);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("A error occured while handling BrowsableText"
+					+ e.getStackTrace());
 		}
 		response.close();
 	}
@@ -126,7 +135,8 @@ public class FileBrowsingHandler extends DefaultHandler {
 			}
 			response.print(HandlerConst.HTML_LAST);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("A error occured while handling Directory"
+					+ e.getStackTrace());
 		}
 		response.close();
 	}

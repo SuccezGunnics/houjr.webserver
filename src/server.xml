@@ -6,18 +6,4 @@
 		<handler-class>com.succez.server.app.FileBrowsingHandler</handler-class>
 	</handler>
 	<default-root>d:/</default-root>
-	<browsable>
-		<image>
-			<jpg>.JPG</jpg>
-			<gif>.GIF</gif>
-			<png>.PNG</png>
-		</image>
-		<text>
-			<txt>.TXT</txt>
-			<java>.JAVA</java>
-			<js>.JS</js>
-			<html>.HTML</html>
-			<xml>.XML</xml>
-		</text>
-	</browsable>
 </web-app>

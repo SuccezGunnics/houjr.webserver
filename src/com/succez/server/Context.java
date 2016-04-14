@@ -27,7 +27,6 @@ public class Context {
 		configMap.put("max_ConNumber", max_ConNumber);
 		configMap.put("default_HandlerClass", default_HandlerClass);
 		configMap.put("default_Port", default_Port);
-		System.out.println("初始化成功~~~");
 	}
 
 	public static String getConfigVal(String key) {

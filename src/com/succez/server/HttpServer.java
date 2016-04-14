@@ -7,6 +7,9 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.succez.server.core.Handler;
 import com.succez.server.core.Request;
 import com.succez.server.core.Response;
@@ -21,6 +24,12 @@ public class HttpServer {
 	private Handler handler;
 	private boolean shutdownCommand = false;
 
+	/**
+	 * 日志管理工具
+	 */
+	public final static Logger LOGGER = LoggerFactory
+			.getLogger(HttpServer.class);
+
 	public static void main(String[] args) {
 		new HttpServer().start();
 	}
@@ -28,15 +37,16 @@ public class HttpServer {
 	public void start() {
 		try {
 			initService();
+			LOGGER.info("Successfully init the Server...");
 		} catch (Exception e1) {
-			e1.printStackTrace();
+			LOGGER.error("failed to init Server: " + e1.getStackTrace());
 		}
 		ServerSocket socket = null;
 		try {
 			socket = new ServerSocket(port);
+			LOGGER.info("The server has been started successfuly!");
 		} catch (IOException e) {
-			System.out.println("服务器启动失败");
-			e.printStackTrace();
+			LOGGER.error("failed to start Server: " + e.getStackTrace());
 		}
 		doService(socket);
 	}
@@ -53,11 +63,12 @@ public class HttpServer {
 				threadPool.execute(serverthread);
 				if (shutdownCommand) {
 					threadPool.shutdown();
-					System.out.println("线程池关闭");
+					LOGGER.info("The server is shutting down...");
 					break;
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.error("An error occured while Server running: "
+						+ e.getStackTrace());
 			}
 		}
 	}
@@ -87,7 +98,8 @@ public class HttpServer {
 						handler = (Handler) instance;
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOGGER.error("failed to get Handler instance: "
+							+ e.getStackTrace());
 				}
 			}
 			return handler;
