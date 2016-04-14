@@ -4,6 +4,12 @@ import com.succez.server.core.Handler;
 import com.succez.server.core.Request;
 import com.succez.server.core.Response;
 
+/**
+ * Handler的实现类，实现service方法
+ * 
+ * @author lenovo
+ *
+ */
 public abstract class DefaultHandler implements Handler {
 
 	@Override

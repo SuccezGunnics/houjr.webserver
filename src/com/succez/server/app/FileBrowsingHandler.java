@@ -2,7 +2,6 @@ package com.succez.server.app;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import com.succez.server.core.Request;
 import com.succez.server.core.Response;
@@ -37,7 +36,7 @@ public class FileBrowsingHandler extends DefaultHandler {
 				&& isBrowsalbeImage(url.substring(url.lastIndexOf('.')))) {
 			handleBrowsableImage(file, response);
 		} else if (file.isFile()) {
-			//handleDownload(file, response);
+			// handleDownload(file, response);
 			handleDownloadWithBP(request, response, file);
 		} else {
 			handleIllegalPath(response);
@@ -45,49 +44,48 @@ public class FileBrowsingHandler extends DefaultHandler {
 	}
 
 	private boolean isBrowsalbeImage(String fileType) {
-		return HandlerConst.imageList.contains(fileType.toUpperCase());
+		return HandlerConst.IMAGE_LIST.contains(fileType.toUpperCase());
 	}
 
 	private boolean isBrowsalbeText(String fileType) {
-		return HandlerConst.textList.contains(fileType.toUpperCase());
+		return HandlerConst.TEXT_LIST.contains(fileType.toUpperCase());
 	}
 
 	private void handleIllegalPath(Response response) {
 		try {
-			response.write(HandlerConst.HEAD_TEXT
-					.getBytes(HandlerConst.DEFAULT_CHARSET));
+			response.print(HandlerConst.HEAD_TEXT);
 			response.write(new File("webroot/404.html"));
-			response.closeStream();
-		} catch (UnsupportedEncodingException e) {
+			response.close();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 	}
 
-//	private void handleDownload(File file, Response response) {
-//		try {
-//			String name = "Content-Disposition:attachment; filename=\""
-//					+ file.getName() + "\"" + CommonUtils.getLineSeparator();
-//			String length = "Accept-Length:" + file.length()
-//					+ CommonUtils.getLineSeparator()
-//					+ CommonUtils.getLineSeparator();
-//			;
-//			response.write(HandlerConst.HEAD_DOWNLOAD
-//					.getBytes(HandlerConst.DEFAULT_CHARSET));
-//			response.write(name.getBytes(HandlerConst.DEFAULT_CHARSET));
-//			response.write(length.getBytes(HandlerConst.DEFAULT_CHARSET));
-//			response.write(file);
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		} finally {
-//			response.closeStream();
-//		}
-//	}
+	// private void handleDownload(File file, Response response) {
+	// try {
+	// String name = "Content-Disposition:attachment; filename=\""
+	// + file.getName() + "\"" + CommonUtils.getLineSeparator();
+	// String length = "Accept-Length:" + file.length()
+	// + CommonUtils.getLineSeparator()
+	// + CommonUtils.getLineSeparator();
+	// ;
+	// response.write(HandlerConst.HEAD_DOWNLOAD
+	// .getBytes(HandlerConst.DEFAULT_CHARSET));
+	// response.write(name.getBytes(HandlerConst.DEFAULT_CHARSET));
+	// response.write(length.getBytes(HandlerConst.DEFAULT_CHARSET));
+	// response.write(file);
+	// } catch (UnsupportedEncodingException e) {
+	// e.printStackTrace();
+	// } finally {
+	// response.closeStream();
+	// }
+	// }
 
 	public void handleDownloadWithBP(Request request, Response response,
 			File file) {
-		//ArcSyncHttpDownload.download(request, response, file);
-		 try {
+		// ArcSyncHttpDownload.download(request, response, file);
+		try {
 			new DownloadHandler().download(request, response, file);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -95,31 +93,42 @@ public class FileBrowsingHandler extends DefaultHandler {
 	}
 
 	private void handleBrowsableImage(File file, Response response) {
-		response.write(HandlerConst.HEAD_IMAGE.getBytes());
-		response.write(file);
-		response.closeStream();
+		try {
+			response.print(HandlerConst.HEAD_IMAGE);
+			response.write(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		response.close();
 	}
 
 	private void handleBrowsableText(File file, Response response) {
-		response.write(HandlerConst.HEAD_TEXT.getBytes());
-		response.write(file);
-		response.closeStream();
+		try {
+			response.print(HandlerConst.HEAD_TEXT);
+			response.write(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		response.close();
 	}
 
 	private void handleDirectory(File file, Response response) {
-		File[] subFiles = file.listFiles();
-		response.write(HandlerConst.HEAD_TEXT.getBytes());
-		response.write(HandlerConst.HTML_PRE, "utf-8");
-		for (int i = 0; i < subFiles.length; i++) {
-			response.write("<tr><td><a href=\"/", HandlerConst.DEFAULT_CHARSET);
-			response.write(CommonUtils.path2URL(subFiles[i]),
-					HandlerConst.DEFAULT_CHARSET);
-			response.write("\">", HandlerConst.DEFAULT_CHARSET);
-			response.write(subFiles[i].getName(), HandlerConst.DEFAULT_CHARSET);
-			response.write("</a></td></tr>", HandlerConst.DEFAULT_CHARSET);
+		try {
+			File[] subFiles = file.listFiles();
+			response.print(HandlerConst.HEAD_TEXT);
+			response.print(HandlerConst.HTML_PRE);
+			for (int i = 0; i < subFiles.length; i++) {
+				response.print("<tr><td><a href=\"/");
+				response.print(CommonUtils.path2URL(subFiles[i]));
+				response.print("\">");
+				response.print(subFiles[i].getName());
+				response.print("</a></td></tr>");
+			}
+			response.print(HandlerConst.HTML_LAST);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		response.write(HandlerConst.HTML_LAST, HandlerConst.DEFAULT_CHARSET);
-		response.closeStream();
+		response.close();
 	}
 
 }

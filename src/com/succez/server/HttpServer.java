@@ -19,14 +19,18 @@ public class HttpServer {
 	private int maxConNumber;
 	private String handlerClass;
 	private Handler handler;
-	private static boolean shutdownCommand = false;
+	private boolean shutdownCommand = false;
 
 	public static void main(String[] args) {
 		new HttpServer().start();
 	}
 
 	public void start() {
-		initService();
+		try {
+			initService();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		ServerSocket socket = null;
 		try {
 			socket = new ServerSocket(port);
@@ -58,7 +62,7 @@ public class HttpServer {
 		}
 	}
 
-	public void initService() {
+	public void initService() throws Exception {
 		Context.load();
 		port = Integer.valueOf(Context.getConfigVal("default_Port"));
 		maxConNumber = Integer.valueOf(Context.getConfigVal("max_ConNumber"));
@@ -100,7 +104,7 @@ public class HttpServer {
 	}
 
 	private class ShutdownThread implements Runnable {
-		
+
 		@Override
 		public void run() {
 			Scanner scan = new Scanner(System.in);

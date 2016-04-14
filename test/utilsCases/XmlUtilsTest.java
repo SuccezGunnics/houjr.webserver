@@ -7,12 +7,12 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.succez.server.app.utils.XmlUtils;
+import com.succez.server.utils.XmlUtils;
 
 public class XmlUtilsTest {
-	
+
 	@Test
-	public void testProperties(){
+	public void testProperties() {
 		File file = new File("src/properties.xml");
 		try {
 			Element root = XmlUtils.getRoot(XmlUtils.load(file));

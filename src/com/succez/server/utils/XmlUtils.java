@@ -1,6 +1,7 @@
 package com.succez.server.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +12,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
- * XML工具类
+ * XML工具类:对xml进行读写操作
  * 
  * @author Gunnics
  *
@@ -54,21 +56,18 @@ public class XmlUtils {
 	 * 
 	 * @param fileName
 	 * @return
+	 * @throws SAXException
+	 * @throws IOException
 	 * @throws Exception
 	 */
-	public static Document load(File fileName) {
-		try {
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setIgnoringComments(false);
-			factory.setIgnoringElementContentWhitespace(true);
-			factory.setValidating(false);
-			factory.setCoalescing(false);
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			return builder.parse(fileName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+	public static Document load(File fileName) throws Exception {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setIgnoringComments(false);
+		factory.setIgnoringElementContentWhitespace(true);
+		factory.setValidating(false);
+		factory.setCoalescing(false);
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		return builder.parse(fileName);
 	}
 
 	/**
@@ -125,13 +124,17 @@ public class XmlUtils {
 
 	/**
 	 * 获取parent节点中 属性名为属性值的所有子节点。
-	 * @param parent 父节点
-	 * @param attrName 属性名
-	 * @param attrValue 属性值
+	 * 
+	 * @param parent
+	 *            父节点
+	 * @param attrName
+	 *            属性名
+	 * @param attrValue
+	 *            属性值
 	 * @return
 	 */
 	public static Element[] getChildrenByAttrubte(Element parent,
-			String attrName,String attrValue) {
+			String attrName, String attrValue) {
 		NodeList nodes = parent.getChildNodes();
 		int len = nodes.getLength();
 		Element temp;
@@ -140,7 +143,8 @@ public class XmlUtils {
 			for (int i = 0; i < len; i++) {
 				if (nodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					temp = (Element) nodes.item(i);
-					if (getAttribute(temp, attrName).equalsIgnoreCase(attrValue))
+					if (getAttribute(temp, attrName)
+							.equalsIgnoreCase(attrValue))
 						list.add(temp);
 				}
 			}

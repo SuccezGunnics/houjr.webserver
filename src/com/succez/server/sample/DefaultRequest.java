@@ -6,77 +6,95 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.succez.server.core.Request;
-import com.succez.server.utils.CommonUtils;
 
+/**
+ * Request的实现类
+ * 
+ * @author lenovo
+ *
+ */
 public class DefaultRequest implements Request {
 
 	private Socket client;
-	private String head;
-
+	private Map<String, String> headers;
 
 	public DefaultRequest(Socket client) {
 		super();
 		this.client = client;
-		this.head = getRequestInfo();
-	}
-	
-	@Override
-	public String getHead(){
-		return head;
+		this.headers = getRequestInfo();
 	}
 
+	private Map<String, String> getHeaders() {
+		return headers;
+	}
 
 	@Override
 	public String getMethod() {
 		String method = null;
-		if(getHead()!=null && getHead().indexOf(' ')!=-1)
-			method = getHead().substring(0,getHead().indexOf(' '));
+		String head = getHeaders().get("Head");
+		method = head.substring(0, head.indexOf(' '));
 		return method;
 	}
 
-	private String getRequestInfo() {
-		StringBuilder buf = new StringBuilder();
+	private Map<String, String> getRequestInfo() {
+		Map<String, String> requestInfo = new HashMap<String, String>();
 		BufferedReader br = null;
 		String line = null;
 		InputStream in = null;
 		try {
 			in = client.getInputStream();
-			br = new BufferedReader(new InputStreamReader(in,"utf-8"));
-			while((line=br.readLine())!=null){
-				if(line.trim().equals("")){
+			br = new BufferedReader(new InputStreamReader(in, "utf-8"));
+			String head = br.readLine();
+			if (head != null) {
+				requestInfo.put("Head", URLDecoder.decode(head, CHARSET));
+			}
+
+			while ((line = br.readLine()) != null) {
+				if (line.trim().equals("")) {
 					break;
 				}
-				buf.append(URLDecoder.decode(line, "utf-8")+CommonUtils.getLineSeparator());
+				requestInfo.put(parseKey(line), parseValue(line));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return buf.toString();
+		return requestInfo;
+	}
+
+	private String parseValue(String line) {
+		int index = line.indexOf(": ");
+		if (line != null && index > 0) {
+			return line.substring(index + 2);
+		}
+		return null;
+	}
+
+	private String parseKey(String line) {
+		int index = line.indexOf(": ");
+		if (line != null && index > 0) {
+			return line.substring(0, index);
+		}
+		return null;
 	}
 
 	@Override
 	public String getRequestUrl() {
 		String url = null;
+		String head = getHeaders().get("Head");
 		int beginIndex = head.indexOf('/') + 1;
-		//int endIndex = head.lastIndexOf("HTTP") - 1;
-		int endIndex = head.substring(0,head.indexOf("\n")).lastIndexOf("HTTP")-1;
+		int endIndex = head.lastIndexOf("HTTP") - 1;
 		if (beginIndex > 0 && endIndex > 0) {
-			url = head.substring(beginIndex,endIndex);
+			url = head.substring(beginIndex, endIndex);
 		}
 		return url;
 	}
 
 	@Override
-	public String getHead(String name) {
-		String header = null;
-		int index;
-		if((index=head.indexOf("\n"+name))>0){
-			int fromIndex = head.indexOf(':', index)+2;
-			int endIndex = head.indexOf('\n', index+1)-1;
-			header = head.substring(fromIndex, endIndex);
-		}
-		return header;
+	public String getHeader(String name) {
+		return getHeaders().get(name);
 	}
 }

@@ -15,4 +15,31 @@
 		<browsable type="text">.CPP</browsable>
 	</params-browsable>
 	
+	<params-contentType>
+		<contentType name="">application/octet-stream</contentType>
+		<contentType name="html">text/html</contentType>
+		<contentType name="htm">text/html</contentType>
+		<contentType name="shtml">text/html</contentType>
+		<contentType name="css">text/css</contentType>
+		<contentType name="xml">text/xml</contentType>
+		
+		<contentType name="doc">application/msword</contentType>
+		<contentType name="docx">application/msword</contentType>
+		<contentType name="pdf">application/pdf</contentType>
+		<contentType name="xls">application/vnd.ms-excel</contentType>
+		<contentType name="ppt">application/vnd.ms-powerpoint</contentType>
+		
+		<contentType name="7z">application/x-7z-compressed</contentType>
+		<contentType name="rar">application/x-rar-compressed</contentType>
+		<contentType name="zip">application/zip</contentType>
+		
+		<contentType name="mp3">audio/mpeg</contentType>
+		<contentType name="mid">audio/midi</contentType>
+		
+		<contentType name="mp4">video/mp4</contentType>
+		<contentType name="mpeg">video/mpeg</contentType>
+		<contentType name="mov">video/quicktime</contentType>
+		<contentType name="avi">video/x-msvideo</contentType>
+	</params-contentType>
+	
 </web-app>

@@ -9,44 +9,44 @@ import java.io.OutputStream;
 
 public class IOUtils {
 
-	public static void writeFile(File file, OutputStream out, int cache) {
+	public static void writeFile(File file, OutputStream out, int cache)
+			throws IOException {
 		if (cache <= 0) {
-			return;
+			throw new IOException("缓存不能为非正");
+		}
+		if (!file.exists() || !file.isFile()) {
+			throw new IOException("文件不存在");
+		}
+		if (out == null) {
+			throw new IOException("流不存在");
 		}
 		FileInputStream fis = null;
 		byte[] buf = new byte[cache];
 		int total;
-		try {
-			fis = new FileInputStream(file);
-			while ((total = fis.read(buf)) != -1) {
-				out.write(buf, 0, total);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			free(fis);
+		fis = new FileInputStream(file);
+		while ((total = fis.read(buf)) != -1) {
+			out.write(buf, 0, total);
 		}
-
+		free(fis);
 	}
 
-	public static byte[] file2buf(File fobj) {
+	public static byte[] file2buf(File fobj) throws IOException {
+		if (!fobj.exists() || !fobj.isFile()) {
+			throw new IOException("文件不存在");
+		}
 		byte[] buf = null;
 		InputStream in = null;
-		try {
-			in = new FileInputStream(fobj);
-			int fileLength = (int) fobj.length();
-			buf = new byte[fileLength];
-			int offset = 0;
-			int readCount = 0;
-			int length = fileLength > 4096 ? 4096 : fileLength;
-			while (offset < fileLength
-					&& (readCount = in.read(buf, offset, length)) >= 0) {
-				offset += readCount;
-			}
-		} catch (Exception e) {
-		} finally {
-			free(in);
+		in = new FileInputStream(fobj);
+		int fileLength = (int) fobj.length();
+		buf = new byte[fileLength];
+		int offset = 0;
+		int readCount = 0;
+		int length = fileLength > 4096 ? 4096 : fileLength;
+		while (offset < fileLength
+				&& (readCount = in.read(buf, offset, length)) >= 0) {
+			offset += readCount;
 		}
+		free(in);
 		return buf;
 	}
 
@@ -60,6 +60,7 @@ public class IOUtils {
 		}
 	}
 
+	@Deprecated
 	public static String setContentType(String fileName) {
 		String contentType = "application/octet-stream";
 		if (fileName.lastIndexOf(".") < 0)
